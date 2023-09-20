@@ -7,7 +7,7 @@ import (
 
 var (
 	is_server *bool
-	is_user   = flag.Bool("u", false, "getdata")
+	is_user   *bool
 	listen    *string
 )
 
