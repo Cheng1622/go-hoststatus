@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/Cheng1622/go-hoststatus/base"
 	"github.com/Cheng1622/go-hoststatus/client"
 	"github.com/Cheng1622/go-hoststatus/server"
@@ -21,11 +19,11 @@ func main() {
 	}
 
 	// 客户端
-	t := time.NewTicker(time.Minute / 10)
-	defer t.Stop()
-	for {
-		client.Client()
-		<-t.C
-	}
+	// t := time.NewTicker(time.Minute / 10)
+	// defer t.Stop()
+	// for {
+	client.Client()
+	// 	<-t.C
+	// }
 
 }

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/rpc"
+	"time"
 
 	"github.com/Cheng1622/go-hoststatus/base"
 )
@@ -30,20 +31,45 @@ func (l *Server) GetData(h int, result *map[string][]HostInfo) error {
 	return nil
 }
 
+func liten() {
+	t := time.NewTicker(time.Minute)
+	for ; ; base.HostDataLock.Unlock() {
+		<-t.C
+		base.HostDataLock.Lock()
+		if len(base.HostData) == 0 {
+			continue
+		}
+		for _, v := range base.HostData {
+			// last push time
+			h := v[len(v)-1]
+			t := int(time.Now().Unix()) - h.Date
+			if t > 60 {
+				// alert
+				// base.Mail.Set(base.UserMail, "host lost "+h.Sid, h.String()).Send()
+				delete(base.HostData, h.Sid)
+			}
+		}
+	}
+}
+
 func (l *Server) Save(h *HostInfo, result *string) error {
 	*result = "I see"
 	log.Println("recive a msg")
 	if h.Sid == "" {
 		return errors.New("sid is null")
 	}
+	base.HostDataLock.Lock()
+	defer base.HostDataLock.Unlock()
 
 	if hostData[h.Sid] == nil {
 		hostData[h.Sid] = make([]HostInfo, 0)
+		log.Println("find a new host")
+		// base.Mail.Set(base.UserMail, "HostListen find a new host", h.String()).Send()
 	}
 
 	hostData[h.Sid] = append(hostData[h.Sid], *h)
 	if len(hostData[h.Sid]) > 90 {
-		*result = "is much"
+		*result = " is much "
 		// 转储
 	}
 	// fmt.Println()
@@ -56,6 +82,11 @@ func (l *Server) Save(h *HostInfo, result *string) error {
 	// fmt.Println("Disk", h.Disk)
 	// fmt.Println("Date", h.Date)
 	return nil
+}
+
+func init() {
+	// 开启监听，失联报警
+	go liten()
 }
 
 func Service() {
