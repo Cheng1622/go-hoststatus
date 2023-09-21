@@ -51,8 +51,29 @@ func init() {
 	flag.Parse()
 }
 
-//go:embed pem/fullchain.pem
-var Cert []byte
+// # 生成私钥
+// openssl genrsa -out server.key 2048
+// # 生成证书
+// openssl req -new -x509 -key server.key -out server.crt -days 3650
+// # 只读权限
+// chmod 400 server.key
+// openssl genrsa -out server.key 2048 &&openssl req -new -x509 -key server.key -out server.crt -days 3650
+// openssl genrsa -out client.key 2048 &&openssl req -new -x509 -key client.key -out client.crt -days 3650
 
-//go:embed pem/privkey.pem
-var Key []byte
+// //go:embed pem/fullchain.pem
+// var Cert []byte
+
+// //go:embed pem/privkey.pem
+// var Key []byte
+
+//go:embed pem/client.crt
+var CCert []byte
+
+//go:embed pem/client.key
+var CKey []byte
+
+//go:embed pem/server.crt
+var SCert []byte
+
+//go:embed pem/server.key
+var SKey []byte

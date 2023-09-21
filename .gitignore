@@ -1,2 +1,3 @@
-go-hoststatus
 *.pem
+*.key
+*.crt
