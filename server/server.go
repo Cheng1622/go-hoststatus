@@ -69,9 +69,12 @@ func (l *Server) Save(h *HostInfo, result *string) error {
 		// base.Mail.Set(base.UserMail, "HostListen find a new host", h.String()).Send()
 	}
 
+	// 使用系统时间
+	h.Date = int(time.Now().Unix())
 	hostData[h.Sid] = append(hostData[h.Sid], *h)
 	if len(hostData[h.Sid]) > 90 {
 		*result = " is much "
+		base.HostData[h.Sid] = base.HostData[h.Sid][80:]
 		// 转储
 	}
 	// fmt.Println()
