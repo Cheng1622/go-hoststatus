@@ -1,0 +1,43 @@
+package user
+
+import (
+	"fmt"
+	"log"
+	"net/rpc"
+
+	"github.com/Cheng1622/go-hoststatus/base"
+)
+
+func showHostData() {
+	for k, v := range base.HostData {
+		fmt.Println("Host", k)
+		for _, v1 := range v {
+			fmt.Println()
+			fmt.Println("Sid", v1.Sid)
+			fmt.Println("HostName", v1.HostName)
+			fmt.Println("SysInfo", v1.SysInfo)
+			fmt.Println("Ip", v1.Ip)
+			fmt.Println("Mem", v1.Mem)
+			fmt.Println("Cpu", v1.Cpu)
+			fmt.Println("Disk", v1.Disk)
+			fmt.Println("Date", v1.Date)
+		}
+	}
+}
+func User() {
+	//连接远程rpc服务
+	conn, err := rpc.DialHTTP("tcp", *base.Listen)
+	if err != nil {
+		log.Println(err)
+	}
+
+	//调用方法
+	result := base.HostData
+	err = conn.Call("Server.GetData", 1, &result)
+	showHostData()
+
+	if err != nil {
+		log.Println(err)
+		return
+	}
+}
