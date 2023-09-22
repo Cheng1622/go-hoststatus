@@ -9,19 +9,9 @@ import (
 )
 
 func showHostData() {
-	for k, v := range base.HostData {
-		fmt.Println("Host", k)
-		for _, v1 := range v {
-			fmt.Println()
-			fmt.Println("Sid", v1.Sid)
-			fmt.Println("HostName", v1.HostName)
-			fmt.Println("SysInfo", v1.SysInfo)
-			fmt.Println("Ip", v1.Ip)
-			fmt.Println("Mem", v1.Mem)
-			fmt.Println("Cpu", v1.Cpu)
-			fmt.Println("Disk", v1.Disk)
-			fmt.Println("Date", v1.Date)
-		}
+	for _, v := range base.HostData {
+		v1 := v[len(v)-1]
+		fmt.Println(v1.String())
 	}
 }
 func User() {
