@@ -13,23 +13,11 @@ import (
 	"github.com/Cheng1622/go-hoststatus/base"
 )
 
-var hostData = make(map[string][]HostInfo)
-
-type HostInfo struct {
-	Sid      string
-	HostName string
-	SysInfo  string
-	Ip       string
-	Mem      string
-	Cpu      string
-	Disk     string
-	Date     int
-}
 type Server struct {
 }
 
-func (l *Server) GetData(h int, result *map[string][]HostInfo) error {
-	*result = hostData
+func (l *Server) GetData(h int, result *map[string][]base.HostInfo) error {
+	*result = base.HostData
 	return nil
 }
 
@@ -54,7 +42,7 @@ func liten() {
 	}
 }
 
-func (l *Server) Save(h *HostInfo, result *string) error {
+func (l *Server) Save(h *base.HostInfo, result *string) error {
 	*result = "I see"
 	log.Println("recive a msg")
 	if h.Sid == "" {
@@ -63,16 +51,16 @@ func (l *Server) Save(h *HostInfo, result *string) error {
 	base.HostDataLock.Lock()
 	defer base.HostDataLock.Unlock()
 
-	if hostData[h.Sid] == nil {
-		hostData[h.Sid] = make([]HostInfo, 0)
+	if base.HostData[h.Sid] == nil {
+		base.HostData[h.Sid] = make([]base.HostInfo, 0)
 		log.Println("find a new host")
 		// base.Mail.Set(base.UserMail, "HostListen find a new host", h.String()).Send()
 	}
 
 	// 使用系统时间
 	h.Date = int(time.Now().Unix())
-	hostData[h.Sid] = append(hostData[h.Sid], *h)
-	if len(hostData[h.Sid]) > 90 {
+	base.HostData[h.Sid] = append(base.HostData[h.Sid], *h)
+	if len(base.HostData[h.Sid]) > 90 {
 		*result = " is much "
 		base.HostData[h.Sid] = base.HostData[h.Sid][80:]
 		// 转储
