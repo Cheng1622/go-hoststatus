@@ -59,7 +59,7 @@ func Client() {
 	}
 	for {
 		<-t.C
-		f()
+		go f()
 	}
 }
 
